@@ -1,0 +1,71 @@
+XM2SCO V2.02
+FAQ and README
+By Paul Batchelor
+
+	1. What is xm2sco?
+xm2sco is a utility that will convert XM files to Csound score files.
+
+	2. Paul made me download this. How do I compile, run the examples, and get outta here?
+xm2sco can be compiled with a simple "make." If you desire to install it, run "make install"
+
+In the examples directory, you can convert the example XM by running this:
+xm2sco -t -v -i test.xm -o score.sco
+
+This generated score file can be rendered with it's orchestra file:
+csound song.orc score.sco
+
+The rest of the orchestra files, are the single instruments. These can be run in orc2xi
+like so:
+orc2xi -i <INSTRUMENT>.orc
+
+	3. What is an XM file and why is it important?
+The XM module was a file format originally used by the music software known as
+Fasttracker 2. The music program was designed to easily create long pieces of music
+in a small amount of space. An XM file can be thought of as a midi file and soundfont
+combined. Note information and effects are stored and played by simple sampler instruments.
+
+	4. What should xm2sco be used for?
+The intended purpose of xm2sco is to create mock-ups of Csound compositions. The idea is 
+that you'd generate samples of your instrument in Csound, and then import them into 
+Milkytracker. Inside of milkytracker, you can quickly create sequences without 
+tediously writing scores by hand and using up DSP. 
+
+The intent of xm2sco is to further fine tune scores after they have been rendered.
+Verbose mode will write comments with your score, making it easier to know when 
+sections start and stop. Multiscore mode will write each instrument to a separate 
+score file. If you so desired, one could render each csound score to a separate 
+audio file, import them into a DAW as stems, and treat them like you would any 
+modern track. 
+
+	5. How does xm2sco write score files?
+xm2sco has a specific format when it generates i-statements. One possible 
+i-statement could look like this:
+
+i1 0 .25 8.00 .5
+
+p1 tells us the instrument number. Milkytracker instrument numbers correspond
+with Csound instrument numbers.
+p2 tells us the start time of the note.
+p3 tells us the duration of the note in beats. In this case, our note is being held
+for a 16th note duration. 
+p4 tells us the pitch in csound pch notation. This note is middle-C.
+p5 returns an amplitude between 0 and 1.
+
+	6. Why is my score file out of order?
+The current algorithm can sometimes slightly shuffle up a score file that has multiple voices
+happening at once. while not a problem with Csound, it can be frustrating from a readability
+standpoint. It is currently being dealt with for future releases.
+
+	7. What is orc2xi? 
+Orc2xi is a tool to be used with xm2sco. It will read a specific kind of orchestra file
+and automatically create an instrument that can be imported into Milkytracker. 
+In order for an orchestra file to render properly, it must have the following characteristics:
+
+a. There can only be one instrument. That instrument number has to be 1.
+b. There can be no header file.
+c. p4 must be for frequency in cspound pitch notation. 
+d. p5 must be for amplitude between 0-1
+e. The instrument must have audio outputs in order to produce sound.
+f. If the instrument is stereo, only the left channel will be used. 
+
+Example orchestra files can be found in the example directory. 
